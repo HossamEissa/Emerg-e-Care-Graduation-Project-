@@ -31,6 +31,7 @@ class FamilyController extends Controller
             }
 
             $user_id = Auth::id();
+
             Family::create([
                 'name' => $request->name,
                 'phone_number' => $request->phone_number,
@@ -52,6 +53,11 @@ class FamilyController extends Controller
     {
         try {
             $user_id = Auth::id();
+            $user = User::find($user_id);
+            if (empty($user->family_members) ) {
+                $msg = "We can't do it , you don't have any member";
+                return $this->returnError('S001', $msg);
+            }
             $family_member = User::where('id', $user_id)->first()->family_members;
 
             return $this->returnData("data", $family_member);
@@ -66,16 +72,27 @@ class FamilyController extends Controller
     {
         try {
             $user_id = Auth::id();
-
-            $is_family_member = User::find($user_id)->family_members()->where('id', $id)->exists();
+            $user = User::find($user_id);
+            if (empty($user->family_members) ) {
+                $msg = "We can't do it , you don't have any member";
+                return $this->returnError('S001', $msg);
+            }
+            $is_family_member = $user->family_members()->where('id', $id)->exists();
 
             if (!$is_family_member) {
                 $msg = "We can't do it , try again with correct member";
                 return $this->returnError('S001', $msg);
             }
 
-            $msg = "Your Family member deleted successfully ";
-            return $this->returnSuccessMessage($msg);
+            $delete = Family::where('id', $id)->delete();
+            if ($delete) {
+                $msg = "Your Family member deleted successfully ";
+                return $this->returnSuccessMessage($msg);
+            } else {
+                $msg = "Something went wrong try again later ";
+                return $this->returnError('S001', $msg);
+            }
+
         } catch (\Exception $e) {
             $msg = $e->getMessage();
             return $this->returnError($error = "", $msg);

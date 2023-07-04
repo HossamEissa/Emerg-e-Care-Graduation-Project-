@@ -2,6 +2,7 @@
 
 namespace App\Models\Users;
 
+use App\Models\RequestsHistory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -77,5 +78,10 @@ class User extends Authenticatable implements JWTSubject
     public function family_members()
     {
         return $this->hasMany(Family::class, 'user_id');
+    }
+
+    public function requests()
+    {
+        return $this->hasMany(RequestsHistory::class, 'user_id');
     }
 }

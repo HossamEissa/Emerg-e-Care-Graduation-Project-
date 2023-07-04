@@ -66,14 +66,14 @@ class ProfileController extends Controller
             if ($request->hasFile('profile_image')) {
                 $old_path = $user_profile_image;
 
-                if ($old_path !== defautl_path) {
-                    delete_image('user', $old_path);
-                }
+//                if ($old_path != defautl_path) {
+//                    delete_image('user', $old_path);
+//                }
 
                 $path = upload_image($request, 'users', 'profile_image', 'user');
                 $user->profile_image = $path;
                 $user->save();
-                
+
             } else {
 
                 $user->profile_image = $user->profile_image;
@@ -93,22 +93,28 @@ class ProfileController extends Controller
 
     public function updateLocation(Request $request)
     {
-        $validation = Validator::make($request->all(), [
-            'latitude' => 'required|numeric|min:-90|max:90',
-            'longitude' => 'required|numeric|min:-180|max:180',
-        ]);
+        try {
+            $validation = Validator::make($request->all(), [
+                'latitude' => 'required|numeric|min:-90|max:90',
+                'longitude' => 'required|numeric|min:-180|max:180',
+            ]);
 
-        if ($validation->fails()) {
-            return $this->returnValidationError($validation);
+            if ($validation->fails()) {
+                return $this->returnValidationError($validation);
+            }
+
+            $user = auth()->user();
+            $user->update([
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
+            ]);
+
+            $msg = "Your data upate successfully ";
+            return $this->returnSuccessMessage($msg);
+        } catch (\Exception $e) {
+            $msg = $e->getMessage();
+            return $this->returnError($error = "", $msg);
         }
 
-        $user = auth()->user();
-        $user->update([
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude,
-        ]);
-
-        $msg = "Your data upate successfully ";
-        return $this->returnSuccessMessage($msg);
     }
 }

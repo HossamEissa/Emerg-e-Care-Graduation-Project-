@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Palmer\AuthPalmerController;
+use App\Http\Controllers\Palmer\PalmerRequest;
+use App\Http\Controllers\Palmer\ProfilePalmerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,7 +16,26 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+###################################### Authentication ##################################
+Route::controller(AuthpalmerController::class)->group(function () {
+    Route::post('register', 'register');
+    Route::post('login', 'login');
+    Route::get('logout', 'logout');
 });
+###################################### End Authentication ###############################
+
+###################################### Profile Info #####################################
+Route::controller(ProfilePalmerController::class)->group(function () {
+    Route::get('profile', 'profileInfo');
+    Route::post('update', 'updateProfile');
+    Route::post('update/location', 'updateLocation');
+});
+###################################### End Profile Info ##################################
+
+###################################### Request ########################################
+Route::controller(PalmerRequest::class)->group(function () {
+    Route::get('show/request', 'showRequest');
+    Route::get('request/accept/{id}', 'acceptRequest');
+    Route::post('cancelOrConfirm', 'confirmOrCancel');
+});
+###################################### End Requests #####################################

@@ -44,7 +44,14 @@ return [
 
         'user' => [
             'driver' => 'local',
-            'root' => base_path('images/'),
+            'root' => public_path('images/'),
+            'url' => env('APP_URL').'/public',
+            'visibility' => 'public',
+        ],
+
+        'palmer' => [
+            'driver' => 'local',
+            'root' => public_path('images/'),
             'url' => env('APP_URL').'/public',
             'visibility' => 'public',
         ],

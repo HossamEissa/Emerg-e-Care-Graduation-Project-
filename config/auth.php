@@ -47,13 +47,13 @@ return [
             'hash' => false,
         ],
 
-        'palmer-api' => [
+        'palmer' => [
             'driver' => 'jwt',
             'provider' => 'palmers',
             'hash' => false,
         ],
 
-        'admin-api' => [
+        'admin' => [
             'driver' => 'jwt',
             'provider' => 'admins',
             'hash' => false,
@@ -83,10 +83,10 @@ return [
             'model' => \App\Models\Users\User::class,
         ],
 
-//        'palmers' => [
-//            'driver' => 'eloquent',
-//            'model' => App\Models\Palmer::class,
-//        ],
+        'palmers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Palmers\Palmer::class,
+        ],
 //
 //        'admins' => [
 //            'driver' => 'eloquent',

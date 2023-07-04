@@ -48,6 +48,8 @@ Route::controller(FamilyController::class)->group(function () {
 
 ###################################### Need Help ########################################
 Route::controller(NeedPalmerController::class)->group(function () {
-
+    Route::get('request', 'needHelp');
+    Route::get('check/accept/{id}', 'checkAccept');
+    Route::post('cancelOrConfirm', 'confirmOrCancel');
 });
 ###################################### End Need Help #####################################
