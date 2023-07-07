@@ -31,11 +31,14 @@ class NeedPalmerController extends Controller
             $userLatitude = $this->user->latitude;
             $userLongitude = $this->user->longitude;
 
-//            $userLatitude = 37.7749;
-//            $userLongitude = -122.4194;
+            //            $userLatitude = 37.7749;
+            //            $userLongitude = -122.4194;
 
             $nearestPalmer = DB::table('palmers')
-                ->select('id', 'latitude', 'longitude',
+                ->select(
+                    'id',
+                    'latitude',
+                    'longitude',
                     DB::raw('(6371 * acos(cos(radians(' . $userLatitude . ')) * cos(radians(latitude)) * cos(radians(longitude) - radians(' . $userLongitude . ')) + sin(radians(' . $userLatitude . ')) * sin(radians(latitude)))) AS distance')
                 )->where('status', 0)->orderBy('distance')->limit(10) // Limit the result to the 10 nearest cars
                 ->first();
@@ -54,16 +57,14 @@ class NeedPalmerController extends Controller
 
                 $data = Palmer::find($nearestPalmer->id);
                 $palmer = get_data_of_palmer($data, "null");
-                $palmer->reques_id = $request->id;
-                $palmer->distance = $nearestPalmer->distance;
+                $palmer['reques_id'] = $request->id;
+                $palmer['distance'] = $nearestPalmer->distance;
 
                 return $this->returnData("data", $palmer, $msg);
             } else {
                 $msg = "No palmer available, please try again";
                 return $this->returnError("", $msg);
             }
-
-
         } catch (\Exception $e) {
             $msg = $e->getMessage();
             return $this->returnError($error = "", $msg);
@@ -92,8 +93,6 @@ class NeedPalmerController extends Controller
             $msg = $e->getMessage();
             return $this->returnError($error = "", $msg);
         }
-
-
     }
 
     public function confirmOrCancel(Request $request)
@@ -132,6 +131,5 @@ class NeedPalmerController extends Controller
             $msg = $e->getMessage();
             return $this->returnError($error = "", $msg);
         }
-
     }
 }
